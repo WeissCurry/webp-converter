@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konverter WebP (Auto Resize 1167x778)</title>
+    <title>Konverter WebP (Auto Resize 956x350)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -17,7 +17,6 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
 
-    <!-- Navbar -->
     <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -25,25 +24,22 @@
                 <h1 class="font-bold text-xl tracking-tight text-slate-900">WebP<span class="text-indigo-600">Resizer</span></h1>
             </div>
             <div class="text-sm text-slate-500 font-medium bg-slate-100 px-3 py-1 rounded-full">
-                🔒 Auto Resize 1167x778
+                🔒 Auto Resize 956x350
             </div>
         </div>
     </nav>
 
     <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
-        <!-- Header Section -->
         <div class="text-center mb-10">
-            <h2 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-3">Convert & Resize ke 1167x778</h2>
+            <h2 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-3">Convert & Resize ke 956x350</h2>
             <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-                Upload gambar apa saja. Hasil output otomatis format <strong>WebP</strong> dengan resolusi <strong>1167x778 piksel</strong> (Stretch).
+                Upload gambar apa saja. Hasil output otomatis format <strong>WebP</strong> dengan resolusi <strong>956x350 piksel</strong> (Stretch).
             </p>
         </div>
 
-        <!-- Controls & Dropzone -->
         <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
             
-            <!-- Quality Slider -->
             <div class="mb-8 max-w-lg mx-auto">
                 <div class="flex justify-between mb-2">
                     <label for="quality" class="text-sm font-semibold text-slate-700">Kualitas Gambar</label>
@@ -54,7 +50,6 @@
                 <p class="text-xs text-slate-400 mt-1 text-center">Geser ke kiri untuk kompresi lebih tinggi.</p>
             </div>
 
-            <!-- Drop Zone -->
             <div id="dropZone" class="relative group cursor-pointer">
                 <input type="file" id="fileInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" multiple accept="image/png, image/jpeg, image/jpg, image/bmp">
                 
@@ -63,25 +58,22 @@
                         <svg class="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                     </div>
                     <p class="text-lg font-semibold text-slate-700 mb-1">Klik atau Drag & Drop Gambar</p>
-                    <p class="text-sm text-slate-500">Output akan otomatis menjadi 1167x778px</p>
+                    <p class="text-sm text-slate-500">Output akan otomatis menjadi 956x350px</p>
                 </div>
             </div>
         </div>
 
-        <!-- Results Section -->
         <div id="resultsContainer" class="hidden">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-xl font-bold text-slate-800">Hasil Konversi</h3>
                 <button onclick="clearAll()" class="text-sm text-red-500 hover:text-red-700 font-medium">Hapus Semua</button>
             </div>
             <div id="resultsList" class="grid grid-cols-1 gap-4">
-                <!-- Items will be injected here -->
-            </div>
+                </div>
         </div>
 
     </main>
 
-    <!-- Hidden Canvas for Processing -->
     <canvas id="canvas" class="hidden"></canvas>
 
     <script>
@@ -97,8 +89,9 @@
 
         // State
         let currentQuality = 0.8;
-        const TARGET_WIDTH = 1167;
-        const TARGET_HEIGHT = 778;
+        // === DIMENSI BARU ===
+        const TARGET_WIDTH = 956;
+        const TARGET_HEIGHT = 350;
 
         // Event Listeners
         qualityInput.addEventListener('input', (e) => {
@@ -128,7 +121,6 @@
 
         fileInput.addEventListener('change', (e) => {
             handleFiles(e.target.files);
-            // Reset input so same files can be selected again if needed
             fileInput.value = ''; 
         });
 
@@ -150,16 +142,12 @@
         }
 
         function processFile(file) {
-            // Validate image type
             if (!file.type.match(/image.*/)) {
                 alert('File harus berupa gambar!');
                 return;
             }
 
-            // Create unique ID for UI element
             const id = 'img-' + Math.random().toString(36).substr(2, 9);
-            
-            // Create UI Skeleton
             const itemHTML = createItemSkeleton(id, file.name, file.size);
             resultsList.insertAdjacentHTML('afterbegin', itemHTML);
 
@@ -167,16 +155,14 @@
             reader.onload = function(event) {
                 const img = new Image();
                 img.onload = function() {
-                    // === MODIFIKASI DIMENSI ===
+                    // Set dimensi canvas ke ukuran target baru
                     canvas.width = TARGET_WIDTH;
                     canvas.height = TARGET_HEIGHT;
                     
-                    // Draw image on canvas (STRETCHED)
-                    // drawImage(image, x, y, width, height)
+                    // Draw image (Stretched/Dipaksa sesuai ukuran)
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(img, 0, 0, TARGET_WIDTH, TARGET_HEIGHT);
 
-                    // Convert to WebP
                     canvas.toBlob((blob) => {
                         updateItemSuccess(id, blob, file.size);
                     }, 'image/webp', currentQuality);
@@ -212,22 +198,20 @@
             const url = URL.createObjectURL(blob);
             const savedSize = originalSize - blob.size;
             const savedPercent = ((savedSize / originalSize) * 100).toFixed(1);
-            const isSmaller = savedSize > 0;
             const newName = el.querySelector('p').innerText.replace(/\.[^/.]+$/, "") + ".webp";
 
-            // Update Icon
             const iconContainer = el.querySelector('.w-12');
             iconContainer.classList.remove('animate-pulse', 'bg-slate-100');
             iconContainer.classList.add('bg-green-100');
             iconContainer.innerHTML = `<svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
 
-            // Update Status Area
             const statusArea = el.querySelector('.status-area');
+            // Update teks status menjadi ukuran baru
             statusArea.innerHTML = `
                 <div class="text-right mr-2 hidden sm:block">
                     <p class="text-sm font-bold text-slate-800">${formatBytes(blob.size)}</p>
                     <p class="text-xs text-slate-500">
-                        1167x778px (WebP)
+                        956x350px (WebP)
                     </p>
                 </div>
                 <a href="${url}" download="${newName}" class="flex items-center justify-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm w-full sm:w-auto">
